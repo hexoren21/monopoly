@@ -20,5 +20,9 @@ public class Player
     {
         return points_experience;
     }
+    public String get_name()
+    {
+        return name;
+    }
 
 }

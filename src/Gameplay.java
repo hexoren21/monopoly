@@ -71,7 +71,7 @@ public class Gameplay extends JPanel implements ActionListener, KeyListener
             if (main_choose_player == null)
             {
                 main_choose_player = new JFrame();
-                Choose_Player choose_player = new Choose_Player(number_of_player, this);
+                Choose_Player choose_player = new Choose_Player(number_of_player + 2, this);
                 main_choose_player.setVisible(true);
                 main_choose_player.setBounds(92, 0, 1182, 735);
                 main_choose_player.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,7 +83,7 @@ public class Gameplay extends JPanel implements ActionListener, KeyListener
         {
             for (int i = 0; i < list.size(); i++)
             {
-                System.out.println("gracz " + i + " exp: " + list.get(i).get_points_experience());
+                System.out.println("gracz " + i + " exp: " + list.get(i).get_points_experience() + " " + list.get(i).get_name());
             }
         }
         g.dispose();

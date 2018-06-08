@@ -16,9 +16,16 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
     private int position_end = 4;
     private ArrayList<Integer> x_position_player = new ArrayList<>(5);
     private ArrayList<Integer> y_position_player = new ArrayList<>(5);
-    private String[] name_player = {"RASH", "ZITZ", "PIMPlE", "BILLY", "JIMMY"};
+    private ArrayList<String> name_player = new ArrayList<>(5);
     private int amount_player;
     private int number_player = 1;
+
+    private int player1_x;
+    private int player1_y;
+    private int player2_x;
+    private int player2_y;
+    private int player3_x;
+    private int player3_y;
 
     private ImageIcon background;
     private ImageIcon player1_window;
@@ -30,6 +37,7 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
     {
         x_position_player.addAll(Arrays.asList(60, 429, 798, 207, 650));
         y_position_player.addAll(Arrays.asList(103, 103, 103, 420, 420));
+        name_player.addAll(Arrays.asList("RASH", "ZITZ", "PIMPlE", "BILLY", "JIMMY"));
         this.gameplay = gameplay;
         this.amount_player = amount_player;
         setFocusable(true);
@@ -41,23 +49,30 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
         background = new ImageIcon("choose_player.jpg");
         background.paintIcon(this, g, 0, 0);
         player1_window = new ImageIcon("player1_window.png");
-        player1_window.paintIcon(this, g, x_position_player.get(position), y_position_player.get(position));
-        x_position_player.remove(position);
-        y_position_player.remove(position);
-        position_end--;
+        player2_window = new ImageIcon("player2_window.png");
+        player3_window= new ImageIcon("player3_window.png");
+        player4_window = new ImageIcon("player4_window.png");
+
+        if (number_player == 1)
+        {
+            player1_window.paintIcon(this, g, x_position_player.get(position), y_position_player.get(position));
+        }
         if (number_player == 2)
         {
-            player2_window = new ImageIcon("player2_window.png");
-            player2_window.paintIcon(this, g, x_position_player.get(position), y_position_player.get(position) );
+            player1_window.paintIcon(this, g, player1_x, player1_y);
+            player2_window.paintIcon(this, g, x_position_player.get(position), y_position_player.get(position));
         }
         if (number_player == 3 && number_player <= amount_player)
         {
-            player3_window= new ImageIcon("player2_window.png");
+            player1_window.paintIcon(this, g, player1_x, player1_y);
+            player2_window.paintIcon(this, g, player2_x, player2_y);
             player3_window.paintIcon(this, g, x_position_player.get(position), y_position_player.get(position) );
         }
         if (number_player == 4 && number_player <= amount_player)
         {
-            player4_window = new ImageIcon("player2_window.png");
+            player1_window.paintIcon(this, g, player1_x, player1_y);
+            player2_window.paintIcon(this, g, player2_x, player2_y);
+            player3_window.paintIcon(this, g, player3_x, player3_y);
             player4_window.paintIcon(this, g, x_position_player.get(position), y_position_player.get(position) );
         }
         g.dispose();
@@ -84,8 +99,27 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
             {
                 gameplay.exit_main_choose_player();
             }
-            gameplay.add_list_player(new Player(name_player[position]));
+            if (number_player == 1)
+            {
+               player1_x = x_position_player.remove(position);
+               player1_y = y_position_player.remove(position);
+            }
+            else if (number_player == 2)
+            {
+                player2_x = x_position_player.remove(position);
+                player2_y = y_position_player.remove(position);
+            }
+            else if (number_player == 3)
+            {
+                player3_x = x_position_player.remove(position);
+                player3_y = y_position_player.remove(position);
+            }
+
+            gameplay.add_list_player(new Player(name_player.remove(position)));
+            position = 0;
+            position_end--;
             number_player++;
+
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT)
         {
