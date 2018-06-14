@@ -17,6 +17,7 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
     private ArrayList<Integer> x_position_player = new ArrayList<>(5);
     private ArrayList<Integer> y_position_player = new ArrayList<>(5);
     private ArrayList<String> name_player = new ArrayList<>(5);
+    private String[] tab_name = {"Player 1", "Player 2", "Player 3", "Player 4"};
     private int amount_player;
     private int number_player = 1;
 
@@ -35,6 +36,11 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
 
     public Choose_Player(int amount_player, Gameplay gameplay)
     {
+        background = new ImageIcon("choose_player.jpg");
+        player1_window = new ImageIcon("player1_window.png");
+        player2_window = new ImageIcon("player2_window.png");
+        player3_window= new ImageIcon("player3_window.png");
+        player4_window = new ImageIcon("player4_window.png");
         x_position_player.addAll(Arrays.asList(60, 429, 798, 207, 650));
         y_position_player.addAll(Arrays.asList(103, 103, 103, 420, 420));
         name_player.addAll(Arrays.asList("RASH", "ZITZ", "PIMPlE", "BILLY", "JIMMY"));
@@ -46,12 +52,9 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
 
     public void paint(Graphics g)
     {
-        background = new ImageIcon("choose_player.jpg");
+
         background.paintIcon(this, g, 0, 0);
-        player1_window = new ImageIcon("player1_window.png");
-        player2_window = new ImageIcon("player2_window.png");
-        player3_window= new ImageIcon("player3_window.png");
-        player4_window = new ImageIcon("player4_window.png");
+
 
         if (number_player == 1)
         {
@@ -95,14 +98,10 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
     {
         if (e.getKeyCode() == KeyEvent.VK_ENTER)
         {
-            if (number_player == amount_player)
-            {
-                gameplay.exit_main_choose_player();
-            }
             if (number_player == 1)
             {
-               player1_x = x_position_player.remove(position);
-               player1_y = y_position_player.remove(position);
+                player1_x = x_position_player.remove(position);
+                player1_y = y_position_player.remove(position);
             }
             else if (number_player == 2)
             {
@@ -115,7 +114,11 @@ public class Choose_Player extends JPanel implements ActionListener, KeyListener
                 player3_y = y_position_player.remove(position);
             }
 
-            gameplay.add_list_player(new Player(name_player.remove(position)));
+            gameplay.add_list_player(new Player(name_player.remove(position), tab_name[number_player-1] ));
+            if (number_player == amount_player)
+            {
+                gameplay.exit_main_choose_player();
+            }
             position = 0;
             position_end--;
             number_player++;

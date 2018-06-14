@@ -11,6 +11,7 @@ public class Gameplay extends JPanel implements ActionListener, KeyListener
     Timer timer;
     private int delay = 100;
     JFrame main_choose_player;
+    JFrame game_board;
     private boolean flag_start_stage = true;
     private boolean flag_amount_player = false;
     private boolean flag_choose_player = false;
@@ -81,9 +82,14 @@ public class Gameplay extends JPanel implements ActionListener, KeyListener
 
         if (flag_play_game)
         {
-            for (int i = 0; i < list.size(); i++)
+            if (game_board == null)
             {
-                System.out.println("gracz " + i + " exp: " + list.get(i).get_points_experience() + " " + list.get(i).get_name());
+                game_board = new JFrame();
+                Display_Board display_board = new Display_Board(list, number_of_player + 2);
+                game_board.setVisible(true);
+                game_board.setBounds(92, -30, 1200, 760);
+                game_board.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                game_board.add(display_board);
             }
         }
         g.dispose();
