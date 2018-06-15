@@ -29,8 +29,6 @@ public class Gameplay extends JPanel implements ActionListener, KeyListener
     {
         setFocusable(true);
         addKeyListener(this);
-        timer = new Timer(delay, this);
-        timer.start();
     }
 
 
@@ -106,7 +104,7 @@ public class Gameplay extends JPanel implements ActionListener, KeyListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        timer.start();
+
     }
 
     @Override

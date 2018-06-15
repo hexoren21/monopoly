@@ -9,6 +9,7 @@ public class Player implements Comparable
     private int number_random_dice;
     private int position;
     static boolean flag_position = false;
+    private boolean flag_bonus_for_starting = false;
     public Player(String name, String number_name_player)
     {
         position = 0;
@@ -60,8 +61,19 @@ public class Player implements Comparable
     }
     public void add_position(int number_random_dice)
     {
-        position = position + number_random_dice;
+        int position1;
+        position1 = position = position + number_random_dice;
         position = position % 40;
+        if (position1 > position) flag_bonus_for_starting = true;
+    }
+    public boolean get_flag_bonus_for_start()
+    {
+        return flag_bonus_for_starting;
+    }
+    public void set_flag_bonus_for_start()
+    {
+        flag_bonus_for_starting = false;
+        points_experience += 200;
     }
     public int get_possition()
     {

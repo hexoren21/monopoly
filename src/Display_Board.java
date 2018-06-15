@@ -24,8 +24,6 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
     private ArrayList<Player> list;
     private ArrayList<ImageIcon> eyelet = new ArrayList<ImageIcon>(6);
     private ArrayList<String> name_player = new ArrayList<String>(4);
-    private ArrayList<Integer> sequence_player = new ArrayList<Integer>(4);
-    private ArrayList<Integer> player_number_random = new ArrayList<>(4);
     private int[] x_pos_1 = {1050, 950, 860, 760, 660, 560, 460, 370, 270, 180, 30, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80,
             220, 320, 410, 510, 610, 700, 800, 890, 990, 1120, 1120, 1120, 1120, 1120, 1120, 1120, 1120, 1120, 1120};
     private int[] y_pos_1 = {660, 660, 660, 660, 660, 660, 660, 660, 660, 660, 660, 570, 510, 455, 395, 335, 275, 220, 160, 100, 20,
@@ -81,13 +79,6 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
         g.setColor(Color.WHITE);
         g.fillRect(480, 180, 260,170);
 
-      //  one_eyelet.paintIcon(this, g,505, 180);
-       // one_eyelet.paintIcon(this, g,625, 180);
-
-//        g.setColor(Color.YELLOW);
-//        g.setFont(new Font("arial", Font.BOLD, 12));
-//        g.drawString(name_player.get(number_player-1), 920, 125);
-
         if (flag_sequence)
         {
             g.setColor(Color.BLACK);
@@ -99,7 +90,6 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
         {
             dice_first = random.nextInt(6);
             dice_last = random.nextInt(6);
-            player_number_random.add(dice_first + dice_last + 2);
             list.get(number_player - 1).add_number_random_dice(dice_first + dice_last + 2);
 
             eyelet.get(dice_first).paintIcon(this, g, 505, 180);
@@ -129,30 +119,30 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
         }
         if (flag_move)
         {
-            g.setColor(Color.YELLOW);
-            g.setFont(new Font("arial", Font.BOLD, 12));
-            g.drawString(list.get(number_player-1).get_number_name_player(), 920, 125);
-            disp_player_point(g);
-
-//            switch (amount_player)
-//            {
-//                case 2:
-//                    player2_point.paintIcon(this, g, x_pos_player2[list.get(1).get_possition()], y_pos_player2[list.get(1).get_possition()]);
-//                    player1_point.paintIcon(this, g, x_pos_player1[list.get(0).get_possition()], y_pos_player1[list.get(0).get_possition()]);
-//                    System.out.println("wartosci wspol =" + x_pos_player2[list.get(1).get_possition()]+ "  " + y_pos_player2[list.get(1).get_possition()]);
-//            }
+            //losowanie i wyswietlenie kosci
             dice_first = random.nextInt(6);
             dice_last = random.nextInt(6);
-            player_number_random.add(dice_first + dice_last + 2);
             eyelet.get(dice_first).paintIcon(this, g, 505, 180);
             eyelet.get(dice_last).paintIcon(this, g, 625, 180);
-            list.get(number_player - 1).add_number_random_dice(dice_first + dice_last + 2);//zmien na dice_first + dice_last + 2
-            System.out.println("wylosowano liczbe 1");
-
-
+            list.get(number_player - 1).add_number_random_dice(dice_first + dice_last + 2);
+            //wyswietlenie pozycji gracza
+            disp_player_point(g);
+            //sprawdzenie regul
+            check_rules();
+            //prawy gorny pasek
+            g.setColor(Color.YELLOW);
+            g.setFont(new Font("arial", Font.BOLD, 12));
+            g.drawString(list.get(number_player-1).get_number_name_player() + "  exp:" +list.get(number_player-1).get_points_experience(), 920, 125);
             next_player();
         }
         g.dispose();
+    }
+    public void check_rules()
+    {
+        if (list.get(number_player-1).get_flag_bonus_for_start())
+        {
+            list.get(number_player-1).set_flag_bonus_for_start();
+        }
     }
     public void set_icon()
     {
@@ -191,7 +181,7 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
                 list.get(0).get_imageIcon().paintIcon(this, g, x_pos_1[list.get(0).get_possition()], y_pos_1[list.get(0).get_possition()]);
             }
         }
-        g.dispose();
+
     }
     public boolean next_player()
     {
