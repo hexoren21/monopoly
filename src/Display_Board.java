@@ -10,10 +10,6 @@ import java.util.*;
 public class Display_Board extends JPanel implements ActionListener, KeyListener
 {
     private ImageIcon board;
-    private ImageIcon player1_point;
-    private ImageIcon player2_point;
-    private ImageIcon player3_point;
-    private ImageIcon player4_point;
     private ImageIcon one_eyelet;
     private ImageIcon two_eyelet;
     private ImageIcon three_eyelet;
@@ -50,6 +46,8 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
     private boolean flag_random_sequence = false;
     private boolean flag_disp_sequencce = false;
     private boolean flag_move = false;
+    private boolean flag_prepare_player = true;
+    private boolean flag_next_random = false;
     Random random = new Random();
 
     public Display_Board(ArrayList<Player> list, int amount_player)
@@ -119,31 +117,108 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
         }
         if (flag_move)
         {
-            //losowanie i wyswietlenie kosci
-            dice_first = random.nextInt(6);
-            dice_last = random.nextInt(6);
-            eyelet.get(dice_first).paintIcon(this, g, 505, 180);
-            eyelet.get(dice_last).paintIcon(this, g, 625, 180);
-            list.get(number_player - 1).add_number_random_dice(dice_first + dice_last + 2);
-            //wyswietlenie pozycji gracza
-            disp_player_point(g);
-            //sprawdzenie regul
-            check_rules();
-            //prawy gorny pasek
+            // funkcj ktora automatycznie wychodzi z wiezieznia po trzech kolejkach
+            if (list.get(number_player - 1).get_stay_in_jail() == 3)
+            {
+                buy_exit_jail();
+            }
+            else if(list.get(number_player - 1).get_flag_information())
+            {
+                check_flag_deposit(g);
+            }
+            else if (flag_prepare_player)
+            {
+                flag_prepare_player = false;
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("arial", Font.PLAIN, 14));
+                g.drawString("Player " + number_player, 520, 305);
+                g.drawString("Press enter to random dice", 520, 325);
+                //ustaw wyswietlenie na przygotowanie gracza do nacisniecia enteru i wylosowanie kosci
+            }
+            else if(!list.get(number_player - 1).get_flag_information())
+            {
+                flag_prepare_player = true;
+                //losowanie i wyswietlenie kosci
+                dice_first = 1; //random.nextInt(6);
+                dice_last = 1; //random.nextInt(6);
+                eyelet.get(0).paintIcon(this, g, 505, 180);//zmienic na dice first i last
+                eyelet.get(0).paintIcon(this, g, 625, 180);
+                list.get(number_player - 1).add_number_random_dice(2);//dice_first + dice_last +
+                //wyswietlenie pozycji gracza
+                check_rules();
+                //sprawdzenie regul
+                //prawy gorny pasek
+                if (!flag_next_random)
+                    next_player();
+            }
             g.setColor(Color.YELLOW);
             g.setFont(new Font("arial", Font.BOLD, 12));
-            g.drawString(list.get(number_player-1).get_number_name_player() + "  exp:" +list.get(number_player-1).get_points_experience(), 920, 125);
-            next_player();
+            g.drawString(list.get(number_player - 1).get_number_name_player() + "  exp:" + list.get(number_player - 1).get_points_experience(), 920, 125);
+            disp_player_point(g);
         }
         g.dispose();
     }
+
+
+
+
+    public void check_flag_deposit(Graphics g)
+    {
+        if (list.get(number_player-1).get_flag_jail())
+        {
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("arial", Font.PLAIN, 14));
+            g.drawString("Player " + number_player, 520, 305);
+            g.drawString("Wykupienie kaucji", 520, 325);
+            g.drawString("Lewo = nie lub Prawo = tak ", 520, 345);
+        }
+    }
     public void check_rules()
     {
+        //sprawdzanie potrojnej tej samej ilosci oczek
+        check_same_number();
+        if (list.get(number_player-1).get_repeating_the_number_of_eyelets() == 3)
+        {
+            list.get(number_player-1).set_repeating_the_number_of_eyelets();
+            list.get(number_player-1).set_position(10);
+            list.get(number_player-1).set_flag_jail(true);
+            list.get(number_player-1).set_flag_information(true);
+            flag_next_random = false;
+            return;
+        }
+        //wyjscie z wiezienia
+        if (list.get(number_player-1).get_flag_jail())
+        {
+            if (dice_first == dice_last)
+            {
+                list.get(number_player - 1).exit_jail();
+                list.get(number_player - 1).set_repeating_the_number_of_eyelets();
+            }
+            else
+            {
+                list.get(number_player - 1).add_stay_in_jail();
+            }
+        }
+        //sprawdzenie przejscia przez start
         if (list.get(number_player-1).get_flag_bonus_for_start())
         {
             list.get(number_player-1).set_flag_bonus_for_start();
         }
     }
+    public void check_same_number()
+    {
+        if (dice_first == dice_last)
+        {
+            list.get(number_player - 1).set_repeating_the_number_of_eyelets();
+            flag_next_random = true;
+        }
+        else
+        {
+            list.get(number_player - 1).reset_repeating_the_number_of_eyelets();
+            flag_next_random = false;
+        }
+    }
+
     public void set_icon()
     {
         switch (amount_player)
@@ -193,6 +268,11 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
         }
         return false;
     }
+    public void buy_exit_jail()
+    {
+        list.get(number_player - 1).exit_jail();
+        list.get(number_player - 1).remove_points(50);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e)
@@ -235,6 +315,16 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
 
             }
 
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+        {
+            if (list.get(number_player - 1).get_flag_jail())
+                buy_exit_jail();
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT)
+        {
+            if (list.get(number_player - 1).get_flag_jail())
+                 list.get(number_player - 1).set_flag_information(false);
         }
         repaint();
 
