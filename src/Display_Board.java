@@ -129,6 +129,7 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
             else if (flag_prepare_player)
             {
                 flag_prepare_player = false;
+
                 g.setColor(Color.BLACK);
                 g.setFont(new Font("arial", Font.PLAIN, 14));
                 g.drawString("Player " + number_player, 520, 305);
@@ -138,12 +139,14 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
             else if(!list.get(number_player - 1).get_flag_information())
             {
                 flag_prepare_player = true;
+                if (list.get(number_player - 1).get_flag_jail())
+                    list.get(number_player - 1).set_flag_information(true);
                 //losowanie i wyswietlenie kosci
-                dice_first = 1; //random.nextInt(6);
-                dice_last = 1; //random.nextInt(6);
-                eyelet.get(0).paintIcon(this, g, 505, 180);//zmienic na dice first i last
-                eyelet.get(0).paintIcon(this, g, 625, 180);
-                list.get(number_player - 1).add_number_random_dice(2);//dice_first + dice_last +
+                dice_first = random.nextInt(6);
+                dice_last = random.nextInt(6);
+                eyelet.get(dice_first).paintIcon(this, g, 505, 180);//zmienic na dice first i last
+                eyelet.get(dice_last).paintIcon(this, g, 625, 180);
+                list.get(number_player - 1).add_number_random_dice(dice_first + dice_last+2);//dice_first + dice_last +
                 //wyswietlenie pozycji gracza
                 check_rules();
                 //sprawdzenie regul
@@ -164,7 +167,7 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
 
     public void check_flag_deposit(Graphics g)
     {
-        if (list.get(number_player-1).get_flag_jail())
+        if(list.get(number_player-1).get_flag_jail() )
         {
             g.setColor(Color.BLACK);
             g.setFont(new Font("arial", Font.PLAIN, 14));
@@ -177,7 +180,7 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
     {
         //sprawdzanie potrojnej tej samej ilosci oczek
         check_same_number();
-        if (list.get(number_player-1).get_repeating_the_number_of_eyelets() == 3)
+        if ((list.get(number_player-1).get_repeating_the_number_of_eyelets() == 3) || (list.get(number_player-1).get_possition() == 30 ))
         {
             list.get(number_player-1).set_repeating_the_number_of_eyelets();
             list.get(number_player-1).set_position(10);
