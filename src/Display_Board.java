@@ -18,8 +18,9 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
     private ImageIcon six_eyelet;
 
     private ArrayList<Player> list;
-    private ArrayList<ImageIcon> eyelet = new ArrayList<ImageIcon>(6);
-    private ArrayList<String> name_player = new ArrayList<String>(4);
+    private ArrayList<ImageIcon> eyelet = new ArrayList<>(6);
+    private ArrayList<String> name_player = new ArrayList<>(4);
+    private ArrayList<Card_Enemy> list_card_enemy = new ArrayList<>(22);
     private int[] x_pos_1 = {1050, 950, 860, 760, 660, 560, 460, 370, 270, 180, 30, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80,
             220, 320, 410, 510, 610, 700, 800, 890, 990, 1120, 1120, 1120, 1120, 1120, 1120, 1120, 1120, 1120, 1120};
     private int[] y_pos_1 = {660, 660, 660, 660, 660, 660, 660, 660, 660, 660, 660, 570, 510, 455, 395, 335, 275, 220, 160, 100, 20,
@@ -61,7 +62,11 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
         six_eyelet = new ImageIcon("6_oczko.png");
         name_player.addAll(Arrays.asList("Player 1", "Player 2", "Player 3", "Player 4"));
         eyelet.addAll(Arrays.asList(one_eyelet, two_eyelet, three_eyelet, four_eyelet, five_eyelet, six_eyelet));
-
+        list_card_enemy.addAll(Arrays.asList(new Card_Enemy(60, 1), new Card_Enemy(60,3), new Card_Enemy(100, 6), new Card_Enemy(100,8), new Card_Enemy(120,9),
+                                             new Card_Enemy(140,11),new Card_Enemy(140,13), new Card_Enemy(160,14), new Card_Enemy(180,16), new Card_Enemy(180,18),
+                                             new Card_Enemy(200,19), new Card_Enemy(220,21), new Card_Enemy(220,23), new Card_Enemy(240,24), new Card_Enemy(260,26),
+                                             new Card_Enemy(260,27), new Card_Enemy(280,29), new Card_Enemy(300,31), new Card_Enemy(300,32), new Card_Enemy(330,34),
+                                             new Card_Enemy(350,37), new Card_Enemy(400,39)));
         this.amount_player = amount_player;
         this.list = list;
         set_icon();
@@ -148,7 +153,7 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
                 eyelet.get(dice_last).paintIcon(this, g, 625, 180);
                 list.get(number_player - 1).add_number_random_dice(dice_first + dice_last+2);//dice_first + dice_last +
                 //wyswietlenie pozycji gracza
-                check_rules();
+                check_rules(g);
                 //sprawdzenie regul
                 //prawy gorny pasek
                 if (!flag_next_random)
@@ -176,12 +181,15 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
             g.drawString("Lewo = nie lub Prawo = tak ", 520, 345);
         }
     }
-    public void check_rules()
+    public void check_rules(Graphics g)
     {
         //sprawdzanie potrojnej tej samej ilosci oczek
         check_same_number();
         if ((list.get(number_player-1).get_repeating_the_number_of_eyelets() == 3) || (list.get(number_player-1).get_possition() == 30 ))
         {
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("arial", Font.PLAIN, 14));
+            g.drawString("Idziesz do wiezienia", 520, 325);
             list.get(number_player-1).set_repeating_the_number_of_eyelets();
             list.get(number_player-1).set_position(10);
             list.get(number_player-1).set_flag_jail(true);
@@ -205,8 +213,24 @@ public class Display_Board extends JPanel implements ActionListener, KeyListener
         //sprawdzenie przejscia przez start
         if (list.get(number_player-1).get_flag_bonus_for_start())
         {
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("arial", Font.PLAIN, 14));
+            g.drawString("Bonus za przejscie przez start", 520, 325);
             list.get(number_player-1).set_flag_bonus_for_start();
         }
+        for (Card_Enemy i : list_card_enemy)
+        {
+            if (i.getCard_position() == list.get(number_player-1).get_possition())
+            {
+                if (i.getFlag_buy_card())
+                {
+
+                }
+                break;
+            }
+        }
+
+
     }
     public void check_same_number()
     {
